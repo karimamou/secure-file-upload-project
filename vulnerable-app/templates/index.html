@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Files</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .drop-zone {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 32px;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            background: #f0f0f0;
+            border-color: #bbb;
+        }
+
+        .drop-zone svg {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 12px;
+            color: #666;
+        }
+
+        .drop-zone-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .drop-zone-size {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .uploads-section {
+            margin-bottom: 32px;
+        }
+
+        .uploads-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            transition: background 0.2s;
+        }
+
+        .file-item:hover {
+            background: #f0f0f0;
+        }
+
+        .file-icon {
+            width: 32px;
+            height: 32px;
+            background: #e8e8e8;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: #666;
+            flex-shrink: 0;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            word-break: break-word;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .file-status {
+            font-size: 12px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .file-status.uploading {
+            color: #666;
+        }
+
+        .file-status.uploaded {
+            color: #22c55e;
+        }
+
+        .file-status.error {
+            color: #ef4444;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .file-btn {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .file-btn:hover {
+            color: #1a1a1a;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-back {
+            background: white;
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-back:hover {
+            background: #f9f9f9;
+            border-color: #bbb;
+        }
+
+        .btn-next {
+            background: #000;
+            color: white;
+        }
+
+        .btn-next:hover {
+            background: #333;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Upload Files</h1>
+            <p>Upload your user-downloadable files.</p>
+        </div>
+
+        <div class="drop-zone" id="dropZone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <p class="drop-zone-text">Drop your files here or browse</p>
+            <p class="drop-zone-size">Max file size up to 1 GB</p>
+            <input type="file" id="fileInput" multiple>
+        </div>
+
+        <div class="uploads-section" id="uploadsSection" style="display: none;">
+            <div class="uploads-title">Uploads</div>
+            <div id="filesList"></div>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-back" onclick="handleBack()">Back</button>
+            <button class="btn btn-next" onclick="handleNext()">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const uploadsSection = document.getElementById('uploadsSection');
+        const filesList = document.getElementById('filesList');
+        const files = [];
+
+        // Store actual File objects for uploading
+        const fileObjects = new Map();
+
+        // Drop zone functionality
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const newFiles = Array.from(e.dataTransfer.files);
+            addFiles(newFiles);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const newFiles = Array.from(e.target.files);
+            addFiles(newFiles);
+            // Clear the input so the same file can be selected again
+            e.target.value = '';
+        });
+
+        function addFiles(newFiles) {
+            newFiles.forEach(file => {
+                const fileObj = {
+                    name: file.name,
+                    size: file.size,
+                    type: file.name.split('.').pop().toUpperCase(),
+                    status: 'uploading',
+                    id: Date.now() + Math.random() // Unique ID for each file
+                };
+                files.push(fileObj);
+                fileObjects.set(fileObj.id, file); // Store the actual File object
+                
+                // Actually upload the file to the server
+                uploadFile(fileObj, file);
+            });
+            renderFiles();
+        }
+
+        function uploadFile(fileObj, file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Upload failed');
+                }
+            })
+            .then(data => {
+                fileObj.status = 'uploaded';
+                renderFiles();
+            })
+            .catch(error => {
+                fileObj.status = 'error';
+                fileObj.error = error.message;
+                renderFiles();
+                console.error('Upload error:', error);
+            });
+        }
+
+        function renderFiles() {
+            if (files.length === 0) {
+                uploadsSection.style.display = 'none';
+                return;
+            }
+
+            uploadsSection.style.display = 'block';
+            filesList.innerHTML = '';
+
+            files.forEach((file, index) => {
+                const fileSize = formatFileSize(file.size);
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+
+                let statusMessage;
+                if (file.status === 'uploaded') {
+                    statusMessage = '<div class="file-status uploaded">✓ Uploaded</div>';
+                } else if (file.status === 'error') {
+                    statusMessage = `<div class="file-status error">✕ Upload failed</div>`;
+                } else {
+                    statusMessage = '<div class="file-status uploading">Uploading...</div>';
+                }
+
+                const deleteBtn = `<button class="file-btn" onclick="deleteFile(${index})">🗑</button>`;
+
+                fileItem.innerHTML = `
+                    <div class="file-icon">${file.type}</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${fileSize}</div>
+                        ${statusMessage}
+                    </div>
+                    <div class="file-actions">
+                        ${deleteBtn}
+                    </div>
+                `;
+                filesList.appendChild(fileItem);
+            });
+        }
+
+        function deleteFile(index) {
+            const fileObj = files[index];
+            fileObjects.delete(fileObj.id); // Remove from file objects map
+            files.splice(index, 1);
+            renderFiles();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i)) + ' ' + sizes[i];
+        }
+
+        function handleBack() {
+            console.log('Back clicked');
+            // Add your back navigation logic here
+        }
+
+        function handleNext() {
+            console.log('Next clicked');
+            // Add your next navigation logic here
+        }
+    </script>
+</body>
+</html>
