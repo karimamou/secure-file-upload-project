@@ -1,4 +1,3 @@
-
 # secure-app/app.py
 import os
 from flask import Flask, request, render_template, flash, redirect, url_for
@@ -30,7 +29,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 def index():
     return render_template('index.html') # On utilisera un nouveau template
 
-@app.route('/upload', methods=['POST'])
+@app.route('/', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
         flash('Aucun fichier sélectionné')

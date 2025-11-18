@@ -147,25 +147,21 @@
             <p>This uploader is protected against malicious files.</p>
         </div>
 
-        <!-- ================================================================= -->
-        <!--    BLOC POUR AFFICHER LES MESSAGES D'ERREUR ET DE SUCCÈS DE FLASK    -->
-        <!-- ================================================================= -->
-          {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                {% if 'Erreur' in message or 'Attack' in message %}
-                    <div class="alert alert-danger">{{ message }}</div>
-                {% else %}
-                    <div class="alert alert-success">{{ message }}</div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+        <!-- BLOC POUR AFFICHER LES MESSAGES DE FLASK -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% if 'Erreur' in message or 'Attack' in message %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                    {% else %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         
-        <!-- ============================================================= -->
-        <!--    FORMULAIRE HTML SIMPLE QUI ENVOIE LES DONNÉES AU BACKEND     -->
-        <!-- ============================================================= -->
-        <form method="post" action="/upload" enctype="multipart/form-data" id="uploadForm">
+        <!-- FORMULAIRE HTML QUI ENVOIE LES DONNÉES AU BACKEND -->
+        <form method="post" action="/" enctype="multipart/form-data" id="uploadForm">
             <div class="drop-zone" id="dropZone">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -183,11 +179,14 @@
         </form>
     </div>
 
+    <!-- ============================================================================== -->
+    <!-- ▼▼▼ LA CORRECTION PRINCIPALE EST DANS CE SCRIPT SIMPLIFIÉ ▼▼▼ -->
+    <!-- ============================================================================== -->
     <script>
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const submitBtn = document.getElementById('submitBtn');
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const fileNameDisplay = document.getElementById('file-name-display'); // Correction de l'ID ici
         
         // Ouvre le sélecteur de fichier quand on clique sur la zone
         dropZone.addEventListener('click', () => fileInput.click());
@@ -217,11 +216,13 @@
         // Met à jour l'UI quand un fichier est sélectionné
         fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
+                // Affiche le nom du fichier et active le bouton
                 fileNameDisplay.textContent = `Selected file: ${fileInput.files[0].name}`;
-                submitBtn.disabled = false; // Active le bouton
+                submitBtn.disabled = false;
             } else {
+                // Cache le nom du fichier et désactive le bouton
                 fileNameDisplay.textContent = '';
-                submitBtn.disabled = true; // Désactive le bouton s'il n'y a pas de fichier
+                submitBtn.disabled = true;
             }
         });
     </script>
