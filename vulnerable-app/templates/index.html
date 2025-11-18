@@ -184,43 +184,106 @@
 
         .buttons {
             display: flex;
-            gap: 12px;
-            justify-content: space-between;
+            justify-content: center;
         }
 
         .btn {
-            flex: 1;
-            padding: 12px 24px;
+            padding: 12px 48px;
             border-radius: 24px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             border: none;
-        }
-
-        .btn-back {
-            background: white;
-            color: #1a1a1a;
-            border: 1px solid #e0e0e0;
-        }
-
-        .btn-back:hover {
-            background: #f9f9f9;
-            border-color: #bbb;
-        }
-
-        .btn-next {
             background: #000;
             color: white;
         }
 
-        .btn-next:hover {
+        .btn:hover {
             background: #333;
         }
 
         input[type="file"] {
             display: none;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .popup-overlay.show .popup {
+            transform: scale(1);
+        }
+
+        .popup-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .popup-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .popup-message {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .popup-btn {
+            padding: 10px 32px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: #000;
+            color: white;
+        }
+
+        .popup-btn:hover {
+            background: #333;
         }
     </style>
 </head>
@@ -248,8 +311,17 @@
         </div>
 
         <div class="buttons">
-            <button class="btn btn-back" onclick="handleBack()">Back</button>
-            <button class="btn btn-next" onclick="handleNext()">Next</button>
+            <button class="btn" onclick="handleSend()">Send</button>
+        </div>
+    </div>
+
+    <!-- Popup Modal -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup">
+            <div class="popup-icon">✓</div>
+            <div class="popup-title">File Uploaded!</div>
+            <div class="popup-message" id="popupMessage">Your file has been successfully uploaded.</div>
+            <button class="popup-btn" onclick="closePopup()">OK</button>
         </div>
     </div>
 
@@ -325,6 +397,7 @@
             .then(data => {
                 fileObj.status = 'uploaded';
                 renderFiles();
+                showPopup(file.name);
             })
             .catch(error => {
                 fileObj.status = 'error';
@@ -389,15 +462,34 @@
             return Math.round(bytes / Math.pow(k, i)) + ' ' + sizes[i];
         }
 
-        function handleBack() {
-            console.log('Back clicked');
-            // Add your back navigation logic here
+        function handleSend() {
+            console.log('Send clicked');
+            // Files are automatically uploaded when added
         }
 
-        function handleNext() {
-            console.log('Next clicked');
-            // Add your next navigation logic here
+        function showPopup(fileName) {
+            const popupOverlay = document.getElementById('popupOverlay');
+            const popupMessage = document.getElementById('popupMessage');
+            popupMessage.textContent = `"${fileName}" has been successfully uploaded.`;
+            popupOverlay.classList.add('show');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                closePopup();
+            }, 3000);
         }
+
+        function closePopup() {
+            const popupOverlay = document.getElementById('popupOverlay');
+            popupOverlay.classList.remove('show');
+        }
+
+        // Close popup when clicking outside the popup
+        document.getElementById('popupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
     </script>
 </body>
 </html>
