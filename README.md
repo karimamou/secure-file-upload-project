@@ -39,43 +39,8 @@ This repository is organized into two main applications:
 *   *Key Python Libraries:* werkzeug for file handling
 *   *Development:* Git & GitHub
 
-## 5. Setup and Installation
 
-To run this project on your local machine, please follow these steps.
-
-*Prerequisites:*
-*   Python 3.7+
-*   pip (Python package installer)
-*   Git
-
-*Instructions:*
-
-1.  *Clone the repository:*
-    bash
-    git clone https://github.com/[Your-Username]/[Your-Repo-Name].git
-    cd [Your-Repo-Name]
-    
-
-2.  *Set up a virtual environment (recommended):*
-    bash
-    # For Windows
-    python -m venv venv
-    venv\Scripts\activate
-
-    # For macOS/Linux
-    python3 -m venv venv
-    source venv/bin/activate
-    
-
-3.  *Install dependencies:*
-    This project uses Flask. Navigate into the desired application folder and install it.
-    bash
-    # Example for the vulnerable app
-    cd vulnerable-app
-    pip install Flask
-    
-
-## 6. How to Run the Applications
+## 5. How to Run the Applications
 
 You can run either the vulnerable or the secure application.
 
@@ -108,7 +73,7 @@ You can run either the vulnerable or the secure application.
 
 ---
 
-## 7. The Exploit ("Break It")
+## 6. The Exploit ("Break It")
 
 Here is how to exploit the vulnerability in the *vulnerable-app*:
 
@@ -129,7 +94,7 @@ Here is how to exploit the vulnerability in the *vulnerable-app*:
     
     You will see the output of the command in your browser. You now have Remote Code Execution.
 
-## 8. The Mitigation ("Fix It")
+## 7. The Mitigation ("Fix It")
 
 The *secure-app* has been hardened to prevent this attack. The following security controls were implemented:
 
@@ -143,6 +108,6 @@ The *secure-app* has been hardened to prevent this attack. The following securit
 2.  Attempt to upload the shell.py webshell.
 3.  The application will correctly identify it as an invalid file type and reject the upload.
 
-## 9. Ethical Disclaimer
+## 8. Ethical Disclaimer
 
 This project and its code are provided for educational purposes only. The techniques demonstrated should only be performed in a controlled and authorized lab environment (like your local machine). Unauthorized scanning or attacking of public web applications is illegal and unethical. The goal is to learn how to defend systems, not to cause harm.
