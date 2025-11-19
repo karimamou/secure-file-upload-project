@@ -2,9 +2,9 @@
 import os
 import uuid
 from flask import Flask, request, render_template, flash, redirect, url_for
-from werkzeug.utils import secure_filename # On importe une fonction de sécurité utile
+from werkzeug.utils import secure_filename 
 
-# ==================== NOUVEAU CODE DE SÉCURITÉ (PARTIE 1) ====================
+# ==================== CODE DE SÉCURITÉ (PARTIE 1) ====================
 # 1. Définir les extensions de fichiers que nous autorisons
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf'}
 
@@ -16,7 +16,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 # ==============================================================================
 
-# ==================== NOUVEAU CODE DE SÉCURITÉ (PARTIE DE MAGIC NUMBER) ====================
+# ==================== CODE DE SÉCURITÉ (PARTIE DE MAGIC NUMBER) ====================
 # 1. Dictionnaire des "Magic Numbers" (signatures de fichiers)
 # On va lire les premiers octets d'un fichier pour vérifier son vrai type.
 MAGIC_NUMBERS = {
@@ -81,7 +81,7 @@ def upload_file():
             return redirect(request.url)
         # ============================================
 
-        # ==================== NOUVEAU CODE DE SÉCURITÉ (MERIAM - PARTIE 2) ====================
+        # ==================== CODE DE SÉCURITÉ (PARTIE DE RENOMMAGE SECURISE) ====================
         # 3. Renommage sécurisé du fichier
         # On génère un nom de fichier unique et aléatoire pour que l'attaquant ne puisse pas le deviner.
         secure_name = f"{uuid.uuid4()}.{extension}"
@@ -96,3 +96,59 @@ def upload_file():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
+  # ======== L'anicenne version de code (sécurité)=====================================================
+
+#UPLOAD_FOLDER = 'uploads' # On peut garder le même nom pour l'instant
+
+#app = Flask(__name__)
+# Une clé secrète est nécessaire pour afficher des messages d'erreur (flash messages)
+# app.secret_key = 'super-secret-key' 
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# if not os.path.exists(UPLOAD_FOLDER):
+#     os.makedirs(UPLOAD_FOLDER)
+
+# @app.route('/')
+# def index():
+#     return render_template('index.html') # On utilisera un nouveau template
+
+# @app.route('/', methods=['POST'])
+# def upload_file():
+#     if 'file' not in request.files:
+#         flash('Aucun fichier sélectionné')
+#         return redirect(request.url)
+    
+#     file = request.files['file']
+
+#     if file.filename == '':
+#         flash('Aucun fichier sélectionné')
+#         return redirect(request.url)
+    
+#     # === LA SÉCURITÉ COMMENCE ICI ! ===
+#     # On utilise la fonction 'secure_filename' pour nettoyer le nom du fichier
+#     filename = secure_filename(file.filename)
+
+#     # On vérifie si le fichier et son extension sont valides
+#     if file and allowed_file(filename):
+        
+#         # ==================== CODE DE SÉCURITÉ (PARTIE 2) ====================
+#         # 3. Vérification du type MIME
+#         # Cela ajoute une couche de sécurité, mais attention, elle peut être contournée !
+#         allowed_mimetypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf']
+#         if file.content_type not in allowed_mimetypes:
+#             flash(f"Erreur : Type de fichier non valide (MIME type '{file.content_type}' incorrect).")
+#             return redirect(request.url)
+#         # ==============================================================================
+
+#         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#         flash(f"Fichier '{filename}' téléversé avec succès !")
+#         return redirect(url_for('index'))
+#     else:
+#         # Si l'extension n'est pas autorisée, on affiche une erreur
+#         flash('Erreur : Extension de fichier non autorisée !')
+#         return redirect(request.url)
+
+# if __name__ == '__main__':
+#     app.run(debug=True)
+
