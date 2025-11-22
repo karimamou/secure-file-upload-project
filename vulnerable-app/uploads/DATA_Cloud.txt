@@ -1,0 +1,7 @@
+Identifiant principal
+ admin
+
+Mot de passe principal
+gy95B774tZQb3F7cMRuL
+
+adrayapp-db.cyne040eoo30.us-east-1.rds.amazonaws.com
